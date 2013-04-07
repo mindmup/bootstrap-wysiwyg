@@ -124,7 +124,7 @@ jQuery(function ($) {
 		options = $.extend({}, defaultOptions, options);
 		bindHotkeys(options.hotKeys);
 		initFileDrops();
-		$.each($.find('[data-role=' + options.toolbarRole + ']'), function () { bindToolbar($(this), options); });
+		$('[data-role=' + options.toolbarRole + ']').each(function () { bindToolbar($(this), options); });
 		$.each(this, function () {
 			var before,
 				element = $(this);
