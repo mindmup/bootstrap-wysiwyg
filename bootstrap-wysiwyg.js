@@ -111,13 +111,13 @@ $(function () {
 				});
 			},
 			initFileDrops = function () {
-				$.event.props.push('dataTransfer');
-				editor.bind('dragenter dragover', false)
-					.bind('drop', function (e) {
+				editor.on('dragenter dragover', false)
+					.on('drop', function (e) {
+						var dataTransfer = e.originalEvent.dataTransfer;
 						e.stopPropagation();
 						e.preventDefault();
-						if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-							insertFiles(e.dataTransfer.files);
+						if (dataTransfer && dataTransfer.files && dataTransfer.files.length > 0) {
+							insertFiles(dataTransfer.files);
 						}
 					});
 			};
