@@ -1,7 +1,7 @@
 /* http://github.com/mindmup/bootstrap-wysiwyg */
 /*global $, FileReader*/
 /*jslint browser:true*/
-$(function () {
+jQuery(function ($) {
 	'use strict';
 	var readFileIntoDataUrl = function (fileInfo) {
 		var loader = $.Deferred(),
