@@ -5,7 +5,7 @@ Tiny bootstrap-compatible WISWYG rich text editor, based on browser execCommand,
 
 * Automatically binds standard hotkeys for common operations on Mac and Windows
 * Drag and drop files to insert images, support image upload (also taking photos on mobile devices)
-* Allows a custom built toolbar, no magic markup generators, enabling the web site to use all the goodness of Bootstrap, FortAwesome and so on...
+* Allows a custom built toolbar, no magic markup generators, enabling the web site to use all the goodness of Bootstrap, Font-Awesome and so on...
 * Does not force any styling - it's all up to you
 * Uses standard browser features, no magic non-standard code, toolbar and keyboard configurable to execute any supported [browser command](https://developer.mozilla.org/en/docs/Rich-Text_Editing_in_Mozilla
 )
