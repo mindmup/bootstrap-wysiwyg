@@ -25,3 +25,10 @@
   box-shadow: none;
   -webkit-box-shadow: none;
 }
+
+div[data-role="editor-toolbar"] {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
