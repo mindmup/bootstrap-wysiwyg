@@ -63,16 +63,13 @@ jQuery(function ($) {
 			},
 			bindHotkeys = function (hotKeys) {
 				$.each(hotKeys, function (hotkey, command) {
-					editor.keydown(hotkey, function (e) {
+					editor.on('keydown keyup', function (e) {
 						if (editor.attr('contenteditable') && editor.is(':visible')) {
 							e.preventDefault();
 							e.stopPropagation();
-							execCommand(command);
 						}
-					}).keyup(hotkey, function (e) {
-						if (editor.attr('contenteditable') && editor.is(':visible')) {
-							e.preventDefault();
-							e.stopPropagation();
+						if (e.type === 'keydown') {
+							execCommand(command);
 						}
 					});
 				});
