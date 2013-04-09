@@ -34,7 +34,7 @@ jQuery(function ($) {
 					'ctrl+j meta+j': 'justifyfull',
 					'shift+tab': 'outdent',
 					'tab': 'indent'
-	            },
+				},
 				toolbarSelector: '[data-role=editor-toolbar]',
 				commandRole: 'edit',
 				activeToolbarClass: 'btn-info',
@@ -89,7 +89,14 @@ jQuery(function ($) {
 			restoreSelection = function () {
 				var selection = window.getSelection();
 				if (selectedRange) {
-					selection.removeAllRanges();
+					try {
+						selection.removeAllRanges();
+					} catch (ex) {
+						var textRange = document.body.createTextRange();
+                        textRange.select();
+                        document.selection.empty();
+					}
+
 					selection.addRange(selectedRange);
 				}
 			},
