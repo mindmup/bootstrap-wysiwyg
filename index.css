@@ -3,40 +3,41 @@
  */
 
 #editor {
-	max-height: 250px;
 	height: 250px;
-	background-color: white;
-	border-collapse: separate; 
-	border: 1px solid rgb(204, 204, 204); 
-	padding: 4px; 
-	box-sizing: content-box; 
-	-webkit-box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset; 
-	box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset;
-	border-top-right-radius: 3px; border-bottom-right-radius: 3px;
-	border-bottom-left-radius: 3px; border-top-left-radius: 3px;
+	background-color: #FFF;
+	border-collapse: separate;
+	border: 1px solid rgb(204, 204, 204);
+	padding: 4px;
 	overflow: scroll;
 	outline: none;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset;
+          box-shadow: rgba(0, 0, 0, 0.0745098) 0px 1px 1px 0px inset;
+  -moz-box-sizing: content-box;
+       box-sizing: content-box;
+  -webkit-border-radius: 3px;
+          border-radius: 3px;
 }
 #voiceBtn {
   width: 20px;
   color: transparent;
   background-color: transparent;
-  transform: scale(2.0, 2.0);
-  -webkit-transform: scale(2.0, 2.0);
-  -moz-transform: scale(2.0, 2.0);
   border: transparent;
   cursor: pointer;
-  box-shadow: none;
+  -webkit-transform: scale(2.0, 2.0);
+     -moz-transform: scale(2.0, 2.0);
+          transform: scale(2.0, 2.0);
   -webkit-box-shadow: none;
+          box-shadow: none;
 }
 
 div[data-role="editor-toolbar"] {
   -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 
-.dropdown-menu a {
-  cursor: pointer;
-}
+.dropdown-menu a { cursor: pointer; }
+
+.contact p { text-align: center; }
+.contact p:last-child { margin-top: 20px; }
