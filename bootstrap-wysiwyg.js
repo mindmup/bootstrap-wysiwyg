@@ -1,7 +1,7 @@
 /* http://github.com/mindmup/bootstrap-wysiwyg */
 /*global jQuery, $, FileReader*/
 /*jslint browser:true*/
-jQuery(function ($) {
+(function ($) {
 	'use strict';
 	var readFileIntoDataUrl = function (fileInfo) {
 		var loader = $.Deferred(),
@@ -186,4 +186,4 @@ jQuery(function ($) {
 		selectionMarker: 'edit-focus-marker',
 		selectionColor: 'darkgrey'
 	};
-});
+}(window.jQuery));
