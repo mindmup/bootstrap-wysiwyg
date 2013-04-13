@@ -100,7 +100,7 @@
 				input.data(options.selectionMarker, color);
 			},
 			bindToolbar = function (toolbar, options) {
-				toolbar.find('a[data-' + options.commandRole + ']').click(function () {
+				toolbar.find('.btn[data-' + options.commandRole + ']').click(function () {
 					restoreSelection();
 					editor.focus();
 					execCommand($(this).data(options.commandRole));
