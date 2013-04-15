@@ -40,6 +40,7 @@ div[data-role="editor-toolbar"] {
 .dropdown-menu a {
   cursor: pointer;
 }
+<<<<<<< HEAD
 
 /* color picker */
 /*!
@@ -169,3 +170,5 @@ div[data-role="editor-toolbar"] {
 	width: 16px;
 	height: 16px;
 } 
+=======
+>>>>>>> 575af80248cdf821123fbf021be981b031b0a872

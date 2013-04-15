@@ -191,6 +191,7 @@
 		fileUploadError: function (reason, detail) { console.log("File upload error", reason, detail); }
 	};
 }(window.jQuery));
+<<<<<<< HEAD
 // color picker //
  /* =========================================================
  * bootstrap-colorpicker.js 
@@ -732,3 +733,5 @@
 	};
 
 }( window.jQuery )
+=======
+>>>>>>> 575af80248cdf821123fbf021be981b031b0a872
