@@ -95,7 +95,9 @@
 			},
 			markSelection = function (input, color) {
 				restoreSelection();
-				document.execCommand('hiliteColor', 0, color || 'transparent');
+				if (document.queryCommandSupported('hiliteColor')) {
+					document.execCommand('hiliteColor', 0, color || 'transparent');
+				}
 				saveSelection();
 				input.data(options.selectionMarker, color);
 			},
