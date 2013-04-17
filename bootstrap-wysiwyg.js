@@ -85,6 +85,7 @@
 					if (/^image\//.test(fileInfo.type)) {
 						$.when(readFileIntoDataUrl(fileInfo)).done(function (dataUrl) {
 							execCommand('insertimage', dataUrl);
+							editor.trigger('image-inserted');
 						}).fail(function (e) {
 							options.fileUploadError("file-reader", e);
 						});
