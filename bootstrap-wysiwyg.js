@@ -22,9 +22,10 @@
 		var editor = this,
 			selectedRange,
 			options,
+			toolbarBtnSelector,
 			updateToolbar = function () {
 				if (options.activeToolbarClass) {
-					$(options.toolbarSelector).find('.btn[data-' + options.commandRole + ']').each(function () {
+					$(options.toolbarSelector).find(toolbarBtnSelector).each(function () {
 						var command = $(this).data(options.commandRole);
 						if (document.queryCommandState(command)) {
 							$(this).addClass(options.activeToolbarClass);
@@ -102,7 +103,7 @@
 				input.data(options.selectionMarker, color);
 			},
 			bindToolbar = function (toolbar, options) {
-				toolbar.find('a[data-' + options.commandRole + ']').click(function () {
+				toolbar.find(toolbarBtnSelector).click(function () {
 					restoreSelection();
 					editor.focus();
 					execCommand($(this).data(options.commandRole));
@@ -152,6 +153,7 @@
 					});
 			};
 		options = $.extend({}, $.fn.wysiwyg.defaults, userOptions);
+		toolbarBtnSelector = 'a[data-' + options.commandRole + '],button[data-' + options.commandRole + '],input[type=button][data-' + options.commandRole + ']';
 		bindHotkeys(options.hotKeys);
 		initFileDrops();
 		bindToolbar($(options.toolbarSelector), options);
