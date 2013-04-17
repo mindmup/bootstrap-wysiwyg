@@ -155,7 +155,9 @@
 		options = $.extend({}, $.fn.wysiwyg.defaults, userOptions);
 		toolbarBtnSelector = 'a[data-' + options.commandRole + '],button[data-' + options.commandRole + '],input[type=button][data-' + options.commandRole + ']';
 		bindHotkeys(options.hotKeys);
-		initFileDrops();
+		if (options.dragAndDropImages) {
+			initFileDrops();
+		}
 		bindToolbar($(options.toolbarSelector), options);
 		editor.attr('contenteditable', true)
 			.on('mouseup keyup mouseout', function () {
@@ -192,6 +194,7 @@
 		activeToolbarClass: 'btn-info',
 		selectionMarker: 'edit-focus-marker',
 		selectionColor: 'darkgrey',
+		dragAndDropImages: true,
 		fileUploadError: function (reason, detail) { console.log("File upload error", reason, detail); }
 	};
 }(window.jQuery));
