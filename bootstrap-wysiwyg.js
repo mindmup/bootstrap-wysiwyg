@@ -86,6 +86,7 @@
 					if (/^image\//.test(fileInfo.type)) {
 						$.when(readFileIntoDataUrl(fileInfo)).done(function (dataUrl) {
 							execCommand('insertimage', dataUrl);
+							changed();
 						}).fail(function (e) {
 							options.fileUploadError("file-reader", e);
 						});
@@ -151,6 +152,9 @@
 							insertFiles(dataTransfer.files);
 						}
 					});
+			},
+			changed = function () {
+				editor.trigger('change');
 			};
 		options = $.extend({}, $.fn.wysiwyg.defaults, userOptions);
 		toolbarBtnSelector = 'a[data-' + options.commandRole + '],button[data-' + options.commandRole + '],input[type=button][data-' + options.commandRole + ']';
@@ -163,7 +167,7 @@
 			.on('mouseup keyup mouseout', function () {
 				saveSelection();
 				updateToolbar();
-			});
+			}).on('input DOMNodeInserted DOMNodeRemoved DOMCharacterDataModified', changed);
 		$(window).bind('touchend', function (e) {
 			var isInside = (editor.is(e.target) || editor.has(e.target).length > 0),
 				currentRange = getCurrentRange(),
