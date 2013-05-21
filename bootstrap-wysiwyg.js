@@ -27,7 +27,7 @@
 				if (options.activeToolbarClass) {
 					$(options.toolbarSelector).find(toolbarBtnSelector).each(function () {
 						var command = $(this).data(options.commandRole);
-						if (document.queryCommandState(command)) {
+						if (document.queryCommandEnabled(command) && document.queryCommandState(command)) {
 							$(this).addClass(options.activeToolbarClass);
 						} else {
 							$(this).removeClass(options.activeToolbarClass);
