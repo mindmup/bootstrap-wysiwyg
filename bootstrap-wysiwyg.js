@@ -52,6 +52,21 @@
 					}
 				}
 			},
+			namespaceEvents = function(events) {
+				if (events.toString() != '[object Array]') {
+					events = events.split(' ');
+				}
+
+				events.push(''); // Add empty element for easy join() support.
+
+				if (options.eventNamespace != null && options.eventNamespace.length > 0)
+				{
+					return events.join('.' + options.eventNamespace + ' ');
+				} else {
+					return events.join(' ');
+				}
+
+			},
 			updateToolbar = function () {
 				if (options.activeToolbarClass) {
 					$(options.toolbarSelector).find(toolbarBtnSelector).each(function () {
@@ -78,20 +93,82 @@
 				}
 				updateToolbar();
 			},
+			mapHotKeyToCommand = function (event, hotKeys) {
+				var hotKey = '';
+
+				if (event.ctrlKey) {
+					hotKey += 'ctrl+';
+				} else if (event.metaKey) {
+					hotKey += 'meta+';
+				}
+
+				if (event.shiftKey) {
+					hotKey += 'shift+';
+				}
+
+				var keyCode = event.keyCode;
+				if (keyCode >= 20) { // Real characters
+					// Reduce UTF chars.
+					if (96 <= event.keyCode && event.keyCode <= 105) {
+						keyCode -= 48;
+					}
+					hotKey += String.fromCharCode(keyCode).toLowerCase();
+
+				} else if (event.keyCode === 9) { // TAB character
+					hotKey += 'tab';
+				}
+
+				return hotKeys[hotKey];
+
+			},
+			editorActive = function () {
+				return (editor.attr('contenteditable') && editor.is(':visible'));
+			},
 			bindHotkeys = function (hotKeys) {
-				$.each(hotKeys, function (hotkey, command) {
-					editor.keydown(hotkey, function (e) {
-						if (editor.attr('contenteditable') && editor.is(':visible')) {
-							e.preventDefault();
-							e.stopPropagation();
+				/*
+				 * Break up the hotkeys into multiple values. For example
+				 * {'ctrl+b meta+b': 'bold'} -> {'ctrl+b': 'bold'},{'meta+b': 'bold'}.
+				 * Also ensures everything is stored in lower case.
+				 */
+				for (var hotKey in hotKeys) {
+					var split;
+					if ((split = hotKey.split(' ')).length > 1) {
+						for (var i = 0; i < split.length; i++) {
+							hotKeys[split[i].toLowerCase()] = hotKeys[hotKey].toLowerCase();
+						}
+						delete hotKeys[hotKey];
+					} else {
+						hotKeys[hotKey.toLowerCase()] = hotKeys[hotKey].toLowerCase();
+					}
+				}
+
+				var eventNamespace = options.eventNamespace + '-' + 'bindKeys';
+
+				editor.on(namespaceEvents('keydown'), hotKeys, function (e) {
+					var command = '';
+
+					// Ensure we have a command to execute for this hotkey, before blocking anything.
+					if (editorActive() && (command = mapHotKeyToCommand(e, hotKeys)) != null) {
+						e.preventDefault();
+						e.stopPropagation();
+
+						// Execute hotkey if the callback tells us it's enabled.
+						if (
+							typeof options.hotKeyEnabledCallback === 'function' &&
+								options.hotKeyEnabledCallback(command)
+							) {
 							execCommand(command);
 						}
-					}).keyup(hotkey, function (e) {
-						if (editor.attr('contenteditable') && editor.is(':visible')) {
-							e.preventDefault();
-							e.stopPropagation();
-						}
-					});
+					}
+				});
+
+				// Install a single keyup handler to block the keyup events matching a hotKey.
+				editor.on(namespaceEvents('keyup'), hotKeys, function (e) {
+					var command = '';
+					if (editorActive() && (command = mapHotKeyToCommand(e, hotKeys)) != null) {
+						e.preventDefault();
+						e.stopPropagation();
+					}
 				});
 			},
 			getCurrentRange = function () {
@@ -149,7 +226,7 @@
 				});
 				toolbar.find('[data-toggle=dropdown]').click(restoreSelection);
 
-				toolbar.find('input[type=text][data-' + options.commandRole + ']').on('webkitspeechchange change', function () {
+				toolbar.find('input[type=text][data-' + options.commandRole + ']').on(namespaceEvents('webkitspeechchange change'), function () {
 					var newValue = this.value; /* ugly but prevents fake double-calls due to selection restoration */
 					this.value = '';
 					restoreSelection();
@@ -158,30 +235,30 @@
 						execCommand($(this).data(options.commandRole), newValue);
 					}
 					saveSelection();
-				}).on('focus', function () {
-					var input = $(this);
-					if (!input.data(options.selectionMarker)) {
-						markSelection(input, options.selectionColor);
-						input.focus();
-					}
-				}).on('blur', function () {
-					var input = $(this);
-					if (input.data(options.selectionMarker)) {
-						markSelection(input, false);
-					}
-				});
-				toolbar.find('input[type=file][data-' + options.commandRole + ']').change(function () {
+				}).on(namespaceEvents('focus'), function () {
+						var input = $(this);
+						if (!input.data(options.selectionMarker)) {
+							markSelection(input, options.selectionColor);
+							input.focus();
+						}
+					}).on(namespaceEvents('blur'), function () {
+						var input = $(this);
+						if (input.data(options.selectionMarker)) {
+							markSelection(input, false);
+						}
+					});
+				toolbar.find('input[type=file][data-' + options.commandRole + ']').on(namespaceEvents('change'), (function () {
 					restoreSelection();
 					if (this.type === 'file' && this.files && this.files.length > 0) {
 						insertFiles(this.files);
 					}
 					saveSelection();
 					this.value = '';
-				});
+				}));
 			},
 			initFileDrops = function () {
-				editor.on('dragenter dragover', false)
-					.on('drop', function (e) {
+				editor.on(namespaceEvents('dragenter dragover'), false)
+					.on(namespaceEvents('drop'), function (e) {
 						var dataTransfer = e.originalEvent.dataTransfer;
 						e.stopPropagation();
 						e.preventDefault();
@@ -198,7 +275,7 @@
 		}
 		bindToolbar($(options.toolbarSelector), options);
 		editor.attr('contenteditable', true)
-			.on('mouseup keyup mouseout', function () {
+			.on(namespaceEvents('mouseup keyup mouseout'), function () {
 				saveSelection();
 				updateToolbar();
 			});
@@ -239,6 +316,8 @@
 		selectionMarker: 'edit-focus-marker',
 		selectionColor: 'darkgrey',
 		dragAndDropImages: true,
+		eventNamespace: 'bootstrap-wysiwyg',
+		hotKeyEnabledCallback: function(command) { return true; },
 		fileUploadError: function (reason, detail) { console.log("File upload error", reason, detail); }
 	};
 }(window.jQuery));
