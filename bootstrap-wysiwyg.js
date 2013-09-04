@@ -21,6 +21,7 @@
 	$.fn.wysiwyg = function (userOptions) {
 		var editor = this,
 			selectedRange,
+			focused,
 			options,
 			toolbarBtnSelector,
 			updateToolbar = function () {
@@ -161,8 +162,15 @@
 		bindToolbar($(options.toolbarSelector), options);
 		editor.attr('contenteditable', true)
 			.on('mouseup keyup mouseout', function () {
+				if (!focused) return;
 				saveSelection();
 				updateToolbar();
+			})
+			.on('focus', function () {
+				focused = true;
+			})
+			.on('blur', function () {
+				focused = false;
 			});
 		$(window).bind('touchend', function (e) {
 			var isInside = (editor.is(e.target) || editor.has(e.target).length > 0),
