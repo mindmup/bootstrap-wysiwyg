@@ -63,6 +63,26 @@ $('#editor').wysiwyg({
 });
 ```
 
+Uploading images to your server
+-------------------------------
+
+There are two steps you are to do to get the inserted images uploaded to your server:
+
+1. Specify the URL to your server script that will handle the upload in the uploadScript option. Also, you can specify parameters that should be passed to the script (in the uploadOptions option). For example:
+
+```javascript
+$('#editor').wysiwyg({
+  uploadScript: '/admin/upload.php',
+  uploadOptions: {
+    post_id: '10',
+    revision_id: '3'
+  }
+});
+```
+
+2. Write a server script (it can be PHP, Java, or anything else) that will move the uploaded file into a public directory on the server and return a JSON data with "url" parameter linking to the uploaded image. The name of the uploaded file is passed in the "filename" POST parameter.
+
+
 Styling for mobile devices
 --------------------------
 
