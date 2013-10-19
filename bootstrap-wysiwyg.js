@@ -228,5 +228,6 @@
 		dragAndDropImages: true,
 		fileUploadError: function (reason, detail) { console.log("File upload error", reason, detail); },
                 uploadScript: '',
+		uploadOptions: {}
 	};
 }(window.jQuery));
