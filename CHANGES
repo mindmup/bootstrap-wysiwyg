@@ -1,0 +1,14 @@
+1.0.1 - Released to the universe
+
+* General improvements and fixes (see graph)
+* Merged a number of wild forks in
+* Fixed issue #23 (NS_ERROR_UNEXPECTED) by @jordandh
+* Fixed issue #118 (Format block buttons) by @beatnbite
+* Multiple instances support by @brutuscat
+* Fix range selection in IE8 by @tilleryd
+* Added throttle to update to improve performance on old browsers by @VictorBjelkholm
+* UglifyJS Version of the code (bootstrap-wysiwyg.min.js)
+* New LICENCE file and thanks section
+* Bootstrap 3.0 demonstrated support by @pnevels
+* Removed 1px nonsense by @mrmrs
+* bowser.json initial by @gl-works

@@ -1,8 +1,40 @@
-/* http://github.com/mindmup/bootstrap-wysiwyg */
-/*global jQuery, $, FileReader*/
-/*jslint browser:true*/
+/* @fileoverview 
+ * Provides full bootstrap based, multi-instance WYSIWYG editor.
+ * 
+ * "Name"    = 'bootstrap-wysiwyg'
+ * "Author"  = 'Various, see LICENCE'
+ * "Version" = '1.0.1'
+ * "About"   = 'Tiny Bootstrap and JQuery Based WISWYG rich text editor.' 
+ */
 (function ($) {
 	'use strict';
+	/** underscoreThrottle() 
+	 * 	From underscore http://underscorejs.org/docs/underscore.html 
+	 */
+	var underscoreThrottle = function(func, wait) {
+		var context, args, timeout, result;
+		var previous = 0;
+		var later = function() {
+			previous = new Date;
+			timeout = null;
+			result = func.apply(context, args);
+		};
+		return function() {
+			var now = new Date;
+			var remaining = wait - (now - previous);
+			context = this;
+			args = arguments;
+			if (remaining <= 0) {
+				clearTimeout(timeout);
+				timeout = null;
+				previous = now;
+				result = func.apply(context, args);
+			} else if (!timeout) {
+				timeout = setTimeout(later, remaining);
+			}
+			return result;
+		};
+	}
 	var readFileIntoDataUrl = function (fileInfo) {
 		var loader = $.Deferred(),
 			fReader = new FileReader();
@@ -20,19 +52,27 @@
 	};
 	$.fn.wysiwyg = function (userOptions) {
 		var editor = this,
+			wrapper = $(editor).parent(),
 			selectedRange,
 			options,
 			toolbarBtnSelector,
 			updateToolbar = function () {
 				if (options.activeToolbarClass) {
-					$(options.toolbarSelector).find(toolbarBtnSelector).each(function () {
-						var command = $(this).data(options.commandRole);
-						if (document.queryCommandState(command)) {
+					$(options.toolbarSelector,wrapper).find(toolbarBtnSelector).each(underscoreThrottle(function () {
+						var commandArr = $(this).data(options.commandRole).split(' '),
+							command = commandArr[0];
+
+						// If the command has an argument and its value matches this button. == used for string/number comparison
+						if (commandArr.length > 1 && document.queryCommandEnabled(command) && document.queryCommandValue(command) == commandArr[1]) {
 							$(this).addClass(options.activeToolbarClass);
+						// Else if the command has no arguments and it is active
+						} else if (commandArr.length === 1 && document.queryCommandEnabled(command) && document.queryCommandState(command)) {
+							$(this).addClass(options.activeToolbarClass);
+						// Else the command is not active
 						} else {
 							$(this).removeClass(options.activeToolbarClass);
 						}
-					});
+					}, options.keypressTimeout));
 				}
 			},
 			execCommand = function (commandWithArgs, valueArg) {
@@ -59,26 +99,36 @@
 				});
 			},
 			getCurrentRange = function () {
-				var sel = window.getSelection();
-				if (sel.getRangeAt && sel.rangeCount) {
-					return sel.getRangeAt(0);
-				}
+                var sel, range;
+                if (window.getSelection) {
+                    sel = window.getSelection();
+                    if (sel.getRangeAt && sel.rangeCount) {
+                        range = sel.getRangeAt(0);
+				    }
+                } else if (document.selection) {
+                    range = document.selection.createRange();
+                } return range;
 			},
 			saveSelection = function () {
 				selectedRange = getCurrentRange();
 			},
 			restoreSelection = function () {
-				var selection = window.getSelection();
-				if (selectedRange) {
-					try {
-						selection.removeAllRanges();
-					} catch (ex) {
-						document.body.createTextRange().select();
-						document.selection.empty();
-					}
-
-					selection.addRange(selectedRange);
-				}
+				var selection;
+                if (window.getSelection || document.createRange) {
+                    selection = window.getSelection();
+                    if (selectedRange) {
+                        try {
+                            selection.removeAllRanges();
+                        } catch (ex) {
+                            document.body.createTextRange().select();
+                            document.selection.empty();
+                        }
+                        selection.addRange(selectedRange);
+                    }
+                } 
+                else if (document.selection && selectedRange) {
+                	selectedRange.select()
+                }
 			},
 			insertFiles = function (files) {
 				editor.focus();
@@ -86,6 +136,7 @@
 					if (/^image\//.test(fileInfo.type)) {
 						$.when(readFileIntoDataUrl(fileInfo)).done(function (dataUrl) {
 							execCommand('insertimage', dataUrl);
+							editor.trigger('image-inserted');
 						}).fail(function (e) {
 							options.fileUploadError("file-reader", e);
 						});
@@ -103,7 +154,7 @@
 				input.data(options.selectionMarker, color);
 			},
 			bindToolbar = function (toolbar, options) {
-				toolbar.find(toolbarBtnSelector).click(function () {
+				toolbar.find(toolbarBtnSelector, wrapper).click(function () {
 					restoreSelection();
 					editor.focus();
 					execCommand($(this).data(options.commandRole));
@@ -152,7 +203,7 @@
 						}
 					});
 			};
-		options = $.extend({}, $.fn.wysiwyg.defaults, userOptions);
+		options = $.extend(true, {}, $.fn.wysiwyg.defaults, userOptions);
 		toolbarBtnSelector = 'a[data-' + options.commandRole + '],button[data-' + options.commandRole + '],input[type=button][data-' + options.commandRole + ']';
 		bindHotkeys(options.hotKeys);
 		if (options.dragAndDropImages) {
@@ -195,6 +246,7 @@
 		selectionMarker: 'edit-focus-marker',
 		selectionColor: 'darkgrey',
 		dragAndDropImages: true,
+		keypressTimeout: 200,
 		fileUploadError: function (reason, detail) { console.log("File upload error", reason, detail); }
 	};
 }(window.jQuery));
