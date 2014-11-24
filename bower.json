@@ -1,0 +1,34 @@
+{
+  "name": "bootstrap-wysiwyg",
+  "description": "Tiny Bootstrap and JQuery Based WISWYG rich text editor based on browser execCommand.",
+  "version": "1.0.2",
+  "keywords": [
+    "css",
+    "js",
+    "responsive",
+    "front-end",
+    "web",
+    "wysiwyg",
+    "editor"
+  ],
+  "homepage": "https://github.com/steveathon/bootstrap-wysiwyg",
+  "main": [
+    "bootstrap-wysiwyg.js",
+    "bootstrap-wysiwyg.min.js",
+    "bootstrap-wysiwyg.min.js"
+  ],
+  "ignore": [
+    ".*",
+    "external/",
+    "index.css",
+    "index.html",
+    "CONTRIBUTING"
+  ],
+  "dependencies": {
+    "jquery": ">= 1.9.1",
+    "jquery.hotkeys": ">= 1.0",
+    "fontawesome": ">= 3.0.0",
+    "bootstrap": ">= 2.0",
+    "google-code-prettify": ">= 1.0.1"
+  }
+}
