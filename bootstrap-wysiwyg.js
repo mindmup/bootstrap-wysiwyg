@@ -59,26 +59,39 @@
 				});
 			},
 			getCurrentRange = function () {
-				var sel = window.getSelection();
-				if (sel.getRangeAt && sel.rangeCount) {
-					return sel.getRangeAt(0);
-				}
+                var sel, range;
+                if (window.getSelection) {
+                    sel = window.getSelection();
+                    if (sel.getRangeAt && sel.rangeCount) {
+                        range = sel.getRangeAt(0);
+				    }
+                } else if (document.selection) {
+                    range = document.selection.createRange();
+                }
+                return range;
 			},
 			saveSelection = function () {
 				selectedRange = getCurrentRange();
 			},
 			restoreSelection = function () {
-				var selection = window.getSelection();
-				if (selectedRange) {
-					try {
-						selection.removeAllRanges();
-					} catch (ex) {
-						document.body.createTextRange().select();
-						document.selection.empty();
-					}
+				var selection;
+                if (window.getSelection || document.createRange) {
+                    selection = window.getSelection();
+                    if (selectedRange) {
+                        try {
+                            selection.removeAllRanges();
+                        } catch (ex) {
+                            document.body.createTextRange().select();
+                            document.selection.empty();
+                        }
 
-					selection.addRange(selectedRange);
-				}
+                        selection.addRange(selectedRange);
+                    }
+                } else if (document.selection) {
+                    if (selectedRange) {
+                        selectedRange.select()
+                    }
+                }
 			},
 			insertFiles = function (files) {
 				editor.focus();
@@ -152,7 +165,7 @@
 						}
 					});
 			};
-		options = $.extend({}, $.fn.wysiwyg.defaults, userOptions);
+		options = $.extend(true, {}, $.fn.wysiwyg.defaults, userOptions);
 		toolbarBtnSelector = 'a[data-' + options.commandRole + '],button[data-' + options.commandRole + '],input[type=button][data-' + options.commandRole + ']';
 		bindHotkeys(options.hotKeys);
 		if (options.dragAndDropImages) {
