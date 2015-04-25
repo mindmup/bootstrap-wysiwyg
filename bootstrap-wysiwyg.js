@@ -26,8 +26,9 @@
 			updateToolbar = function () {
 				if (options.activeToolbarClass) {
 					$(options.toolbarSelector).find(toolbarBtnSelector).each(function () {
-						var command = $(this).data(options.commandRole);
-						if (document.queryCommandState(command)) {
+						var command = $(this).data(options.commandRole),
+							format = command.match(/formatBlock (.+)/);
+						if (document.queryCommandState(command) || (format && (format[1] == document.queryCommandValue("formatBlock")))) {
 							$(this).addClass(options.activeToolbarClass);
 						} else {
 							$(this).removeClass(options.activeToolbarClass);
