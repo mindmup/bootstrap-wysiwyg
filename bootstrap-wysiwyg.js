@@ -29,8 +29,10 @@
 						var command = $(this).data(options.commandRole);
 						if (document.queryCommandState(command)) {
 							$(this).addClass(options.activeToolbarClass);
+							$(this).children().addClass('icon-white');
 						} else {
 							$(this).removeClass(options.activeToolbarClass);
+							$(this).children().removeClass('icon-white');
 						}
 					});
 				}
