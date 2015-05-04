@@ -23,11 +23,49 @@
 			selectedRange,
 			options,
 			toolbarBtnSelector,
+			commandCache = {},
+			updateCommandCache = function () {
+				var key;
+				for (key in commandCache) {
+					var commandValue = document.queryCommandValue(key);
+					var commandState = document.queryCommandState(key);
+
+					if (commandState) {
+						commandCache[key] = commandState;
+					} else if (commandValue.length > 0 && commandValue !== 'false') {
+						commandCache[key] = commandValue;
+					} else {
+						commandCache[key] = false;
+					}
+				}
+			},
+			restoreCommandCache = function() {
+				var key;
+				for (key in commandCache) {
+					var val = commandCache[key];
+					if (typeof(val) === 'boolean') {
+						if (val !== document.queryCommandState(key)) {
+							document.execCommand(key, 0, null);
+						}
+					} else if (val !== document.queryCommandValue(key)) {
+						document.execCommand(key, 0, val);
+					}
+				}
+			},
 			updateToolbar = function () {
 				if (options.activeToolbarClass) {
 					$(options.toolbarSelector).find(toolbarBtnSelector).each(function () {
 						var command = $(this).data(options.commandRole);
+						var commandNoArgs; // Temporarily store index, replace with command.
+
+						if ((commandNoArgs = command.indexOf(' ')) >= 0) {
+							commandNoArgs = command.slice(0, commandNoArgs);
+						} else {
+							commandNoArgs = command;
+						}
 						if (document.queryCommandState(command)) {
+							$(this).addClass(options.activeToolbarClass);
+						} else if (commandNoArgs + ' ' + document.queryCommandValue(commandNoArgs) === command) {
 							$(this).addClass(options.activeToolbarClass);
 						} else {
 							$(this).removeClass(options.activeToolbarClass);
@@ -40,6 +78,11 @@
 					command = commandArr.shift(),
 					args = commandArr.join(' ') + (valueArg || '');
 				document.execCommand(command, 0, args);
+				if (args.length > 0) {
+					commandCache[command] = document.queryCommandValue(command);
+				} else {
+					commandCache[command] = document.queryCommandState(command);
+				}
 				updateToolbar();
 			},
 			bindHotkeys = function (hotKeys) {
@@ -104,8 +147,10 @@
 			},
 			bindToolbar = function (toolbar, options) {
 				toolbar.find(toolbarBtnSelector).click(function () {
+					updateCommandCache();
 					restoreSelection();
 					editor.focus();
+					restoreCommandCache();
 					execCommand($(this).data(options.commandRole));
 					saveSelection();
 				});
@@ -164,6 +209,12 @@
 				saveSelection();
 				updateToolbar();
 			});
+
+		$(toolbarBtnSelector).each(function () {
+			var btnAttr = this.getAttribute('data-' + options.commandRole);
+			commandCache[btnAttr.split(' ')[0]] = false;
+		});
+
 		$(window).bind('touchend', function (e) {
 			var isInside = (editor.is(e.target) || editor.has(e.target).length > 0),
 				currentRange = getCurrentRange(),
