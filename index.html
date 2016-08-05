@@ -11,12 +11,21 @@
     <link href="external/google-code-prettify/prettify.css" rel="stylesheet">
     <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
     <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-responsive.min.css" rel="stylesheet">
+<<<<<<< HEAD
+	<link href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<script src="https://mindmup.s3.amazonaws.com/lib/jquery.hotkeys.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+    <script src="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.js"></script>
+	<link href="index.css" rel="stylesheet">
+=======
 		<link href="http://netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
 		<script src="external/jquery.hotkeys.js"></script>
     <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
     <script src="external/google-code-prettify/prettify.js"></script>
 		<link href="index.css" rel="stylesheet">
+>>>>>>> 575af80248cdf821123fbf021be981b031b0a872
     <script src="bootstrap-wysiwyg.js"></script>
   </head>
   <body>
@@ -53,7 +62,13 @@
           <li><a data-edit="fontSize 1"><font size="1">Small</font></a></li>
           </ul>
       </div>
+<<<<<<< HEAD
+	  <a class="input-append colorpickerBG add-on btn" data-edit="backColor #000" data-color="rgb(255, 146, 180)" data-color-format="rgb" title="Background Color">Background Color</a>	  
+	  <a class="input-append colorpickerFR add-on btn" data-edit="foreColor #000" data-color="rgb(255, 146, 180)" data-color-format="rgb" title="Color">Color</a>
+	  <div class="btn-group">
+=======
       <div class="btn-group">
+>>>>>>> 575af80248cdf821123fbf021be981b031b0a872
         <a class="btn" data-edit="bold" title="Bold (Ctrl/Cmd+B)"><i class="icon-bold"></i></a>
         <a class="btn" data-edit="italic" title="Italic (Ctrl/Cmd+I)"><i class="icon-italic"></i></a>
         <a class="btn" data-edit="strikethrough" title="Strikethrough"><i class="icon-strikethrough"></i></a>
@@ -189,9 +204,23 @@ file inputs, the file contents are read in using the FileReader API and used as 
 	</div>
 </div>
 <script>
+<<<<<<< HEAD
+  $(function(){ 
+	  $('.colorpickerFR').colorpicker().on('changeColor', function(e){
+		 $(this).attr("data-edit", "foreColor "+e.color.toHex());
+		 document.execCommand("foreColor", 0, e.color.toHex());
+		});  
+	  $('.colorpickerBG').colorpicker().on('changeColor', function(e){
+		 $(this).attr("data-edit", "backColor "+e.color.toHex());
+		 document.execCommand("backColor", 0, e.color.toHex());
+		});  
+    function initToolbarBootstrapBindings() {
+	var fonts = ['Serif', 'Sans', 'Arial', 'Arial Black', 'Courier', 
+=======
   $(function(){
     function initToolbarBootstrapBindings() {
       var fonts = ['Serif', 'Sans', 'Arial', 'Arial Black', 'Courier', 
+>>>>>>> 575af80248cdf821123fbf021be981b031b0a872
             'Courier New', 'Comic Sans MS', 'Helvetica', 'Impact', 'Lucida Grande', 'Lucida Sans', 'Tahoma', 'Times',
             'Times New Roman', 'Verdana'],
             fontTarget = $('[title=Font]').siblings('.dropdown-menu');
@@ -209,7 +238,11 @@ file inputs, the file contents are read in using the FileReader API and used as 
       });
       if ("onwebkitspeechchange"  in document.createElement("input")) {
         var editorOffset = $('#editor').offset();
+<<<<<<< HEAD
+        $('#voiceBtn').css('position','absolute').offset({top: editorOffset.top, left: editorOffset.left+$('#editor').innerWidth()-55});
+=======
         $('#voiceBtn').css('position','absolute').offset({top: editorOffset.top, left: editorOffset.left+$('#editor').innerWidth()-35});
+>>>>>>> 575af80248cdf821123fbf021be981b031b0a872
       } else {
         $('#voiceBtn').hide();
       }
