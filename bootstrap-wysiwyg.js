@@ -7,7 +7,15 @@
 		var loader = $.Deferred(),
 			fReader = new FileReader();
 		fReader.onload = function (e) {
-			loader.resolve(e.target.result);
+			var imageData = {image: {image_url: e.target.result}};
+			$.ajax({
+				type : 'POST',
+				url: "/content_images",
+        data: imageData,
+        success : function(data) {
+					loader.resolve(data.imageurl);
+				}
+			});
 		};
 		fReader.onerror = loader.reject;
 		fReader.onprogress = loader.notify;
@@ -112,12 +120,19 @@
 				toolbar.find('[data-toggle=dropdown]').click(restoreSelection);
 
 				toolbar.find('input[type=text][data-' + options.commandRole + ']').on('webkitspeechchange change', function () {
+
 					var newValue = this.value; /* ugly but prevents fake double-calls due to selection restoration */
+
 					this.value = '';
 					restoreSelection();
 					if (newValue) {
-						editor.focus();
-						execCommand($(this).data(options.commandRole), newValue);
+						if(this.id == 'iframeInput' && (newValue.indexOf("</iframe>") === -1)){
+							alert('Incorrect format for embedded video.  Please use youtube and vimeo iframe embeds only')
+						}
+						else{
+							editor.focus();
+							execCommand($(this).data(options.commandRole), newValue);
+						}
 					}
 					saveSelection();
 				}).on('focus', function () {
